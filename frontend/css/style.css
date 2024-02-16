@@ -1,0 +1,50 @@
+@import url('https://fonts.googleapis.com/css2?family=Protest+Riot&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Protest Riot", sans-serif;
+    font-weight: 400;
+    font-style: normal;
+    color: #575757;
+}
+
+body {
+    background-color: #f5f5f5;
+}
+
+li {
+    margin: 10px 0;
+}
+
+.notebook {
+    background-color: #fcf7bd;
+    border-radius: 5px;
+    border: 1px solid #dbdbdb;
+    width: 50%;
+    padding: 20px;
+    margin: 40px auto;
+    gap: 15px;
+}
+
+.listTitle {
+    padding-bottom: 15px;
+    text-align: center;
+}
+
+.tasksList {
+    list-style-type: none;
+}
+
+.taskInput {
+    background-color: #fcf7bd;
+    border: none;
+    color: #6e6d6d;
+    width: 100%;
+    font-size: 1rem;
+}
+
+.taskInput:focus {
+    outline: none;
+}
