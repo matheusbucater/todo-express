@@ -1,0 +1,12 @@
+ul(class="tasksList")
+    each task in #{tasks}
+        hr
+        li
+            input(
+                id=task.title
+                type="checkbox"
+                value="task" + task.id
+                checked=task.status==1
+            )
+            label(for=task.title) task.title
+        hr
