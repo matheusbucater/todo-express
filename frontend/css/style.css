@@ -31,7 +31,7 @@ input[type=checkbox] {
 }
 
 input[type=checkbox]:checked + .taskTitle {
-    text-decoration: solid line-through LightGreen 4px;
+    text-decoration: solid line-through Black 3px;
 }
 
 hr {
@@ -99,9 +99,9 @@ spam {
 }
 
 .taskEdit {
-    color: DarkOrange;
+    color: MediumBlue;
 }
 
 .taskDelete {
-    color: FireBrick;
+    color: Crimson;
 }
