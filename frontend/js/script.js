@@ -81,7 +81,10 @@ const createListItem = (task) => {
                 deleteTask(e.target);
             } else {
                 updateTaskTitle(e.target)
-                .then(() => e.target.defaultValue = e.target.value);
+                .then(() => {
+                    e.target.defaultValue = e.target.value
+                    e.target.blur();
+                });
             }
         }
     });
