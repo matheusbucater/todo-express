@@ -120,11 +120,6 @@ const loadTasks = async () => {
     ul.innerHTML = "";
 
     const tasks = await fetchTasks()
-        .then((response) => {
-            response.forEach((task) => {
-                createListItem(task); 
-            });
-        })
         .catch(() => {
             const taskInput = document.getElementsByClassName("taskInput")[0];
             const span = createElement("span", "taskFail");
@@ -133,6 +128,11 @@ const loadTasks = async () => {
             span.innerText = "failed to load tasks";
             ul.appendChild(span);
         });
+    if (tasks) {
+        tasks.forEach((task) => {
+            createListItem(task);
+        });
+    }
 }
 
 const addTask = async (target) => {
@@ -145,18 +145,12 @@ const addTask = async (target) => {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(taskBody)
     })
-        .then(async (response) => {
-            if (response.status === 201) {
-                const { insertId } = await response.json();
-                const task = { id: insertId, title: value.trim(), status: 0 };
-                createListItem(task);
-                target.value = "";
-            } else {
-                document.querySelector("span.taskError").innerText = "failed to add new task";
-            }
+        .then(() => {
+            loadTasks();
+            document.getElementsByClassName("taskInput")[0].value = "";
         })
         .catch(() => {
-            document.querySelector("span.taskError").innerText = "failed to add new task";
+            document.querySelector("span.taskError").innerText = "failed to add task";
         });
 }
 
