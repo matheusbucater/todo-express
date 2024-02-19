@@ -1,5 +1,5 @@
 const fetchTasks = async () => {
-    const response = await fetch("http://localhost:8080/tasks");
+    const response = await fetch("http://localhost:8080/tasks?ordered=true");
     const tasks = await response.json();
     return tasks;
 };
@@ -121,12 +121,15 @@ const loadTasks = async () => {
 
     const tasks = await fetchTasks()
         .then((response) => {
-            tasks.forEach((task) => {
+            response.forEach((task) => {
                 createListItem(task); 
             });
         })
         .catch(() => {
+            const taskInput = document.getElementsByClassName("taskInput")[0];
             const span = createElement("span", "taskFail");
+
+            taskInput.readOnly = true;
             span.innerText = "failed to load tasks";
             ul.appendChild(span);
         });

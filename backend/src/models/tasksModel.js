@@ -5,6 +5,11 @@ const getTasks = async () => {
     return tasks;
 };
 
+const getOrderedTasks = async () => {
+    const [tasks] = await connection.execute("SELECT * FROM tasks ORDER BY status ASC, created_at DESC");
+    return tasks;
+};
+
 const createTask = async (task) => {
     const {title} = task;
     const [createdTask] = await connection.execute("INSERT INTO tasks(title) VALUES (?)", [title]);
@@ -34,6 +39,7 @@ const updateTask = async (id, task) => {
 
 module.exports = {
     getTasks,
+    getOrderedTasks,
     createTask,
     deleteTask,
     updateTask

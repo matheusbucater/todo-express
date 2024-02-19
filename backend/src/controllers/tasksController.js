@@ -1,6 +1,10 @@
 const tasksModel = require("../models/tasksModel");
 
 const getTasks = async (request, response) => {
+    if (request.query.ordered === "true") {
+        const tasks = await tasksModel.getOrderedTasks();
+        return response.status(200).json(tasks);
+    }
     const tasks = await tasksModel.getTasks();
     return response.status(200).json(tasks);
 };
