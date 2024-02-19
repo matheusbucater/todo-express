@@ -96,7 +96,6 @@ spam {
     font-style: normal;
     line-height: 50%;
     margin-left: 15px;
-    color: Black;
 }
 
 .taskEdit {
@@ -105,4 +104,12 @@ spam {
 
 .taskDelete {
     color: Crimson;
+}
+
+.taskError {
+    font-size: 0.7rem;
+    font-style: normal;
+    font-height: 50%;
+    margin: 5px 0;
+    color: Black;
 }

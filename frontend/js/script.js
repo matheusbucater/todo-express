@@ -44,29 +44,31 @@ const createListItem = (task) => {
     const li = createElement("li");
     const div = createElement("div", `task${task.id}`);
     const span = createElement("span", "taskInfo");
+    const p = createElement("p", "taskError");
 
     const keyboardReturnIcon = createIcon("keyboard_return");
 
     const checkbox = createCheckbox(true ? task.status == 1 : false, task.id, task.title);
     checkbox.addEventListener("change", (e) => {
-        updateTaskStatus(e.target);
+        updateTaskStatus(e.target)
+            .catch(()=> {
+                e.target.checked = !e.target.checked
+                p.innerText = "failed to update status";
+            });
     });
 
     const newTaskInput = createTextInput(task.title, task.id);
 
     newTaskInput.addEventListener("input", (e) => {
-        if (e.target.value.trim() === "") {
-            span.classList.remove("taskEdit");
-            span.classList.add("taskDelete");
-            span.innerText = "[enter] to delete";
-        }
         if (e.target.value.trim() != e.target.defaultValue) {
             span.classList.remove("taskDelete");
             span.classList.add("taskEdit");
             span.innerText = "[enter] to edit";
         }
-        else {
-            span.innerText = "";
+        if (e.target.value.trim() === "") {
+            span.classList.remove("taskEdit");
+            span.classList.add("taskDelete");
+            span.innerText = "[enter] to delete";
         }
         e.target.style.width = e.target.value.length + "ch";
     });
@@ -79,12 +81,15 @@ const createListItem = (task) => {
 
     newTaskInput.addEventListener("keypress", (e) => {
         if (e.key === "Enter" && e.target.value.trim() !== e.target.defaultValue) {
-            console.log("a");
             if (e.target.value.trim() === "") {
-                deleteTask(e.target);
+                deleteTask(e.target)
+                    .catch(() => p.innerText = "failed to delete task");
             } else {
                 updateTaskTitle(e.target)
-                .then(() => e.target.defaultValue = e.target.value);
+                    .then(() => e.target.defaultValue = e.target.value)
+                    .catch(()=> {
+                        p.innerText = "failed to update title";
+                    });
             }
         }
     });
@@ -93,6 +98,7 @@ const createListItem = (task) => {
     li.appendChild(newTaskInput);
     li.appendChild(keyboardReturnIcon);
     li.appendChild(span);
+    li.appendChild(p);
 
     div.appendChild(li);
     div.appendChild(hr);
@@ -106,12 +112,12 @@ const loadTasks = async () => {
 
     const tasks = await fetchTasks();
     tasks.forEach((task) => {
-       createListItem(task); 
+        createListItem(task); 
     });
 }
 
 const addTask = async (target) => {
-    
+
     const { value } = target;
     const taskBody = { title: value.trim() };
 
@@ -120,14 +126,14 @@ const addTask = async (target) => {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(taskBody)
     })
-    .then(async (response) => {
-        if (response.status === 201) {
-            const { insertId } = await response.json();
-            const task = { id: insertId, title: value.trim(), status: 0 };
-            createListItem(task);
-            target.value = "";
-        }
-    });
+        .then(async (response) => {
+            if (response.status === 201) {
+                const { insertId } = await response.json();
+                const task = { id: insertId, title: value.trim(), status: 0 };
+                createListItem(task);
+                target.value = "";
+            }
+        });
 }
 
 const updateTaskStatus = async (target) => {
@@ -142,12 +148,11 @@ const updateTaskStatus = async (target) => {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(taskBody)
     })
-    .catch(() => target.checked = !checked);
 }
 
 const updateTaskTitle = async (target) => {
     const { id, value } = target;
-    
+
     const taskBody = { title: value };
 
     await fetch(`http://localhost:8080/tasks/${id}`, {
@@ -155,7 +160,7 @@ const updateTaskTitle = async (target) => {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(taskBody)
     })
-    .then(console.log(target));
+        .then(console.log(target));
 }
 
 const deleteTask = async (target) => {
@@ -163,9 +168,9 @@ const deleteTask = async (target) => {
     await fetch(`http://localhost:8080/tasks/${id}`, {
         method: "delete"
     })
-    .then(() => {
-        document.getElementsByClassName(`task${target.id}`)[0].remove();
-    });
+        .then(() => {
+            document.getElementsByClassName(`task${target.id}`)[0].remove();
+        });
 }
 
 window.onload = () => {
@@ -176,5 +181,5 @@ window.onload = () => {
             addTask(e.target);
         }
     });
-    
+
 }
