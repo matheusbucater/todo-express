@@ -43,7 +43,7 @@ const createListItem = (task) => {
     const hr = createElement("hr");
     const li = createElement("li");
     const div = createElement("div", `task${task.id}`);
-    const em = createElement("span", "taskInfo");
+    const span = createElement("span", "taskInfo");
 
     const keyboardReturnIcon = createIcon("keyboard_return");
 
@@ -56,27 +56,30 @@ const createListItem = (task) => {
 
     newTaskInput.addEventListener("input", (e) => {
         if (e.target.value.trim() === "") {
-            em.classList.remove("taskEdit");
-            em.classList.add("taskDelete");
-            em.innerText = "[enter] to delete";
+            span.classList.remove("taskEdit");
+            span.classList.add("taskDelete");
+            span.innerText = "[enter] to delete";
+        }
+        if (e.target.value.trim() != e.target.defaultValue) {
+            span.classList.remove("taskDelete");
+            span.classList.add("taskEdit");
+            span.innerText = "[enter] to edit";
         }
         else {
-            em.classList.remove("taskDelete");
-            em.classList.add("taskEdit");
-            em.innerText = "[enter] to edit";
+            span.innerText = "";
         }
-
         e.target.style.width = e.target.value.length + "ch";
     });
 
     newTaskInput.addEventListener("blur", (e) => {
-        em.innerText = "";
+        span.innerText = "";
         e.target.value = e.target.defaultValue;
         e.target.style.width = e.target.value.length + "ch";
     });
 
     newTaskInput.addEventListener("keypress", (e) => {
-        if (e.key === "Enter") {
+        if (e.key === "Enter" && e.target.value.trim() !== e.target.defaultValue) {
+            console.log("a");
             if (e.target.value.trim() === "") {
                 deleteTask(e.target);
             } else {
@@ -89,7 +92,7 @@ const createListItem = (task) => {
     li.appendChild(checkbox);
     li.appendChild(newTaskInput);
     li.appendChild(keyboardReturnIcon);
-    li.appendChild(em);
+    li.appendChild(span);
 
     div.appendChild(li);
     div.appendChild(hr);
