@@ -109,7 +109,14 @@ spam {
 .taskError {
     font-size: 0.7rem;
     font-style: normal;
-    font-height: 50%;
+    line-height: 50%;
     margin: 5px 0;
     color: Black;
+}
+
+.taskFail {
+    font-size: 1rem;
+    font-style: normal;
+    line-height: 50%;
+    color: Crimson;
 }

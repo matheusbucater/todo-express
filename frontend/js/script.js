@@ -51,9 +51,15 @@ const createListItem = (task) => {
     const checkbox = createCheckbox(true ? task.status == 1 : false, task.id, task.title);
     checkbox.addEventListener("change", (e) => {
         updateTaskStatus(e.target)
+            .then(() => p.innerText = "")
             .catch(()=> {
-                e.target.checked = !e.target.checked
+                e.target.checked = !e.target.checked;
+                p.innerText = "failed to update task status";
             });
+    });
+
+    checkbox.addEventListener("blur", (e) => {
+        p.innerText = "";
     });
 
     const newTaskInput = createTextInput(task.title, task.id);
@@ -74,6 +80,7 @@ const createListItem = (task) => {
 
     newTaskInput.addEventListener("blur", (e) => {
         span.innerText = "";
+        p.innerText = "";
         e.target.value = e.target.defaultValue;
         e.target.style.width = e.target.value.length + "ch";
     });
@@ -82,12 +89,16 @@ const createListItem = (task) => {
         if (e.key === "Enter" && e.target.value.trim() !== e.target.defaultValue) {
             if (e.target.value.trim() === "") {
                 deleteTask(e.target)
+                    .then(() => p.innerText = "")
+                    .catch(() => p.innerText = "failed to delete task");
             } else {
                 updateTaskTitle(e.target)
-                .then(() => {
-                    e.target.defaultValue = e.target.value
-                    e.target.blur();
-                });
+                    .then(() => {
+                        p.innerText = "";
+                        e.target.defaultValue = e.target.value
+                        e.target.blur();
+                    })
+                    .catch(() => p.innerText = "failed to update task title");
             }
         }
     });
@@ -108,10 +119,17 @@ const loadTasks = async () => {
     const ul = document.getElementsByClassName("tasksList")[0];
     ul.innerHTML = "";
 
-    const tasks = await fetchTasks();
-    tasks.forEach((task) => {
-        createListItem(task); 
-    });
+    const tasks = await fetchTasks()
+        .then((response) => {
+            tasks.forEach((task) => {
+                createListItem(task); 
+            });
+        })
+        .catch(() => {
+            const span = createElement("span", "taskFail");
+            span.innerText = "failed to load tasks";
+            ul.appendChild(span);
+        });
 }
 
 const addTask = async (target) => {
@@ -130,7 +148,12 @@ const addTask = async (target) => {
                 const task = { id: insertId, title: value.trim(), status: 0 };
                 createListItem(task);
                 target.value = "";
+            } else {
+                document.querySelector("span.taskError").innerText = "failed to add new task";
             }
+        })
+        .catch(() => {
+            document.querySelector("span.taskError").innerText = "failed to add new task";
         });
 }
 
@@ -157,8 +180,7 @@ const updateTaskTitle = async (target) => {
         method: "put",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(taskBody)
-    })
-        .then(console.log(target));
+    });
 }
 
 const deleteTask = async (target) => {
@@ -174,10 +196,13 @@ const deleteTask = async (target) => {
 window.onload = () => {
     loadTasks();
 
-    document.getElementsByClassName("taskInput")[0].addEventListener("keypress", (e) => {
+    const taskInput = document.getElementsByClassName("taskInput")[0];
+    taskInput.addEventListener("keypress", (e) => {
         if (e.key === "Enter") {
             addTask(e.target);
         }
     });
-
+    taskInput.addEventListener("blur", () => {
+        document.querySelector("span.taskError").innerText = "";
+    });
 }
