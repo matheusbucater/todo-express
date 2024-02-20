@@ -54,3 +54,7 @@ window.onload = () => {
         document.querySelector("span.taskError").innerText = "";
     });
 }
+
+export {
+    loadTasks
+};

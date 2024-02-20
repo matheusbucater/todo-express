@@ -1,4 +1,5 @@
 import { updateTaskTitle, updateTaskStatus, deleteTask } from "./handlers.js";
+import { loadTasks } from "./script.js";
 
 const createElement = (tag, className="") => {
     const element = document.createElement(tag);
@@ -55,7 +56,10 @@ const createTaskDiv = (task) => {
 
     checkbox.addEventListener("change", ({target}) => {
         updateTaskStatus(target)
-            .then(() => p.innerText = "")
+            .then(() => {
+                loadTasks();
+                p.innerText = "";
+            })
             .catch(()=> {
                 target.checked = !target.checked;
                 p.innerText = "failed to update task status";
@@ -95,13 +99,14 @@ const createTaskDiv = (task) => {
             if (target.value.trim() === "") {
                 deleteTask(target)
                     .then(() => {
-                        p.innerText = ""
-                        document.getElementsByClassName(`task${target.id}`)[0].remove();
+                        loadTasks();
+                        p.innerText = "";
                     })
                     .catch(() => p.innerText = "failed to delete task");
             } else {
                 updateTaskTitle(target)
                     .then(() => {
+                        loadTasks();
                         p.innerText = "";
                         target.defaultValue = target.value.trim();
                         target.blur();
