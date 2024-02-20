@@ -35,3 +35,11 @@ python -m http.server
 ```
 
 ## Examples
+
+- An example of the app being used.
+
+![](https://github.com/matheusbucater/todo-express/blob/main/resources/todo-example.gif)
+
+- An example of the app giving error messages.
+  
+![](https://github.com/matheusbucater/todo-express/blob/main/resources/error-example.gif)
