@@ -62,6 +62,7 @@ const createTaskDiv = (task) => {
             })
             .catch(()=> {
                 target.checked = !target.checked;
+                span.innerText = "";
                 p.innerText = "failed to update task status";
             });
     });
@@ -74,6 +75,9 @@ const createTaskDiv = (task) => {
     newTaskInput.addEventListener("input", ({target}) => {
         const { value, defaultValue } = target;
 
+        p.innerText = "";
+        target.style.width = value.length + "ch";
+
         if (value.trim() != defaultValue) {
             span.classList.remove("taskDelete");
             span.classList.add("taskEdit");
@@ -84,7 +88,6 @@ const createTaskDiv = (task) => {
             span.classList.add("taskDelete");
             span.innerText = "[enter] to delete";
         }
-        target.style.width = value.length + "ch";
     });
 
     newTaskInput.addEventListener("blur", ({target}) => {
@@ -102,7 +105,10 @@ const createTaskDiv = (task) => {
                         loadTasks();
                         p.innerText = "";
                     })
-                    .catch(() => p.innerText = "failed to delete task");
+                    .catch(() => {
+                        p.innerText = "failed to delete task";
+                        span.innerText = "";
+                    });
             } else {
                 updateTaskTitle(target)
                     .then(() => {
@@ -111,7 +117,10 @@ const createTaskDiv = (task) => {
                         target.defaultValue = target.value.trim();
                         target.blur();
                     })
-                    .catch(() => p.innerText = "failed to update task title");
+                    .catch(() => {
+                        p.innerText = "failed to update task title";
+                        span.innerText = "";
+                    });
             }
         }
     });
