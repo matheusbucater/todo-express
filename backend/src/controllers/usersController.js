@@ -21,6 +21,7 @@ const registerUser = async (request, response) => {
     return response.status(200).json(createdUser);
 };
 
+
 module.exports = {
-    registerUser
+    registerUser,
 };

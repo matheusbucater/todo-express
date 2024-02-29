@@ -1,3 +1,7 @@
+const bcrypt = require("bcrypt");
+
+const usersModel = require("../models/usersModel");
+
 const validateUserBody = (request, response, next) => {
     const {body} = request;
 
@@ -8,6 +12,23 @@ const validateUserBody = (request, response, next) => {
     next();
 };
 
+const validateUserCredentials = async (request, response, next) => {
+    const {body} = request;
+
+    const user = await usersModel.getUser(body.email)
+        .catch(() => response.status(400).json({ message: "failed to fetch user" }));
+
+    bcrypt.compare(body.password, user.password, (err, result) => {
+        if (err) return response.status(400).json({ message: "failed to validate user" });
+        if (!result) return response.status(400).json({ message: "wrong password" });
+    });
+
+    request.data = { ...user, password: undefined, iat: undefined, exp: undefined };
+
+    next();
+}
+
 module.exports = {
-    validateUserBody
+    validateUserBody,
+    validateUserCredentials
 };
