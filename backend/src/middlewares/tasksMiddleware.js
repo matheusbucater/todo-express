@@ -1,4 +1,4 @@
-const validateBody = (request, response, next) => {
+const validateTaskBody = (request, response, next) => {
 
     const {body} = request;
 
@@ -27,6 +27,6 @@ const validateParams = (request, response, next) => {
 }
 
 module.exports = {
-    validateBody,
+    validateTaskBody,
     validateParams
 };
