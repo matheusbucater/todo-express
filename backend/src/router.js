@@ -10,10 +10,10 @@ const tokensMiddleware = require("./middlewares/tokensMiddleware");
 
 const router = express.Router();
 
-router.get("/tasks", tasksController.getTasks);
-router.post("/tasks", tasksMiddleware.validateTaskBody, tasksController.createTask);
-router.delete("/tasks/:id", tasksMiddleware.validateParams, tasksController.deleteTask);
-router.put("/tasks/:id", [tasksMiddleware.validateParams, tasksMiddleware.validateTaskBody], tasksController.updateTask);
+router.get("/tasks", tokensMiddleware.validateUserToken, tasksController.getTasks);
+router.post("/tasks", tasksMiddleware.validateTaskBody, tokensMiddleware.validateUserToken, tasksController.createTask);
+router.delete("/tasks/:id", tasksMiddleware.validateParams, tokensMiddleware.validateUserToken, tasksController.deleteTask);
+router.put("/tasks/:id", tasksMiddleware.validateParams, tasksMiddleware.validateTaskBody, tokensMiddleware.validateUserToken, tasksController.updateTask);
 
 router.get("/login", tokensMiddleware.validateUserToken, (_, res) => res.status(201).json());
 router.post("/login", usersMiddleware.validateUserBody, usersMiddleware.validateUserCredentials, tokensMiddleware.generateUserToken, (_, res) => res.status(201).json());

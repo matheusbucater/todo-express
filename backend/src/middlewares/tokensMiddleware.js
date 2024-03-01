@@ -6,10 +6,10 @@ env.config();
 const validateUserToken = (request, response, next) => {
 
     const token = request.get("X-Access-Token");
+
     jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
         if (err) return response.status(400).json({ Unathorized: err.message });
         request.data = user;
-
         next();
     });
 }
