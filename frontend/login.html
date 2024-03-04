@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <script src="js/login.js"></script>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,700,0,200" />
+</head>
+<body>
+    <div class="login">
+        <h2 class="loginTitle">login</h2>
+        <div class="email">
+            <input type="text" placeholder="email" class="emailInput"/>
+            <spam class="material-symbols-outlined">keyboard_return</spam>
+            <span class="emailInfo"></span>
+            <p class="emailError"></p>
+        </div>
+        <hr>
+        <div class="password">
+            <input type="password" placeholder="password" class="pwdInput"/>
+            <spam class="material-symbols-outlined">keyboard_return</spam>
+            <span class="pwdInfo"></span>
+            <p class="pwdError"></p>
+        </div>
+        <hr>
+        <div class="pwdRules">
+            <p>password must contain at least:</p>
+            <ul class="pwdList">
+                <li class="pwdLength">eigth characters</li>
+                <li class="pwdUpper">one uppercase letter</li>
+                <li class="pwdLower">one lowercase letter</li>
+                <li class="pwdNumber">one number</li>
+                <li class="pwdSymbol">one special character</li>
+            </ul>
+        </div>
+        <hr>
+        <p class="register">don't have an account? <a href="./register.html">sign up</a></p>
+    </div>
+</body>
+</html>

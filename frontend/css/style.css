@@ -42,7 +42,7 @@ label {
     color: Gray;
 }
 
-.notebook {
+.notebook, .login {
     background-color: LightYellow;
     border-radius: 5px;
     border: 1px solid LightSteelBlue;
@@ -51,13 +51,20 @@ label {
     margin: 40px auto;
 }
 
-.listTitle {
+.listTitle, .loginTitle {
     text-align: center;
     margin-bottom: 10px;
 }
 
 .tasksList {
     list-style-type: none;
+}
+
+.emailInput, .pwdInput {
+    background-color: LightYellow;
+    border: none;
+    color: LightSlateGray;
+    font-size: 1rem;
 }
 
 .taskInput {
@@ -68,8 +75,14 @@ label {
     font-size: 1rem;
 }
 
-.taskInput:focus {
+.taskInput:focus, .emailInput:focus, .pwdInput:focus {
     outline: none;
+}
+
+.register {
+    background-color: LightYellow;
+    color: Gray;
+    margin-top: 20px;
 }
 
 .taskTitle {
@@ -83,7 +96,7 @@ label {
     outline: none;
 }
 
-.taskTitle:focus + spam {
+.taskTitle:focus + spam, .emailInput:focus + spam, .pwdInput:focus + spam {
     visibility: visible;
 }
 
@@ -91,22 +104,22 @@ spam {
     visibility: hidden;
 }
 
-.taskInfo {
+.taskInfo, .emailInfo, .pwdInfo {
     font-size: 1rem;
     font-style: normal;
     line-height: 50%;
-    margin-left: 15px;
 }
 
-.taskEdit {
+
+.taskEdit, .emailConfirm, .pwdConfirm {
     color: MediumBlue;
-}
+    }
 
-.taskDelete {
+.taskDelete, .emailInvalid, .pwdInvalid {
     color: Crimson;
 }
 
-.taskError {
+.taskError, .emailError, .pwdError {
     font-size: 0.7rem;
     font-style: normal;
     line-height: 50%;
@@ -121,9 +134,12 @@ spam {
     color: Crimson;
 }
 
-.lastTask {
-    font-size: 1.2rem;
-    font-style: normal;
-    line-height: 50%;
-    color: LawnGreen;
+.pwdRulePass {
+    list-style-image: url('/icons/checkmark.svg');
+    color: MediumBlue;
+}
+
+.pwdRuleFail {
+    list-style-image: url('/icons/x_mark.svg');
+    color: Crimson;
 }

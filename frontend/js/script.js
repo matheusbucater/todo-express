@@ -1,5 +1,6 @@
 import { createElement, createTaskDiv } from "./elements.js";
 import { addTask } from "./handlers.js";
+import { getCookie } from "./cookie.js";
 
 const fetchTasks = async () => {
     return await fetch("http://localhost:8080/tasks?ordered=true")
@@ -33,6 +34,13 @@ const loadTasks = async () => {
 }
 
 window.onload = () => {
+    
+    const token = getCookie("token");
+
+    if (!token) {
+        window.location.href = "./login.html";
+    }
+
     loadTasks();
 
     const taskInput = document.getElementsByClassName("taskInput")[0];
