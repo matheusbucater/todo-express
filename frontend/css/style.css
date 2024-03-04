@@ -134,12 +134,34 @@ spam {
     color: Crimson;
 }
 
+.pwdRules {
+    margin: 15px 20px
+}
+
+.ruleDesc{
+    padding: 15px 0;
+}
+
+.pwdRule {
+    padding: 10px 0;
+    color: Gray;
+}
+
+.pwdRule, .ruleDesc {
+    font-size: 1rem;
+    font-style: normal;
+    line-height: 50%;
+}
+
+
 .pwdRulePass {
-    list-style-image: url('/icons/checkmark.svg');
     color: MediumBlue;
+    padding-left: 10px;
+    list-style-type: "✓";
 }
 
 .pwdRuleFail {
-    list-style-image: url('/icons/x_mark.svg');
     color: Crimson;
+    padding-left: 10px;
+    list-style-type: "✗";
 }

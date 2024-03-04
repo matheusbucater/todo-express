@@ -49,9 +49,21 @@ const updateTaskTitle = async (target) => {
     });
 };
 
+const login = async (userBody) => {
+
+    await fetch("http://localhost:8080/login", {
+        method: "get",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(userBody)
+    }).then((res) => {
+        console.log(res.headers);
+    });
+}
+
 export {
     addTask,
     deleteTask,
     updateTaskStatus,
     updateTaskTitle,
+    login,
 };

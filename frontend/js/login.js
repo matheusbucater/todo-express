@@ -1,3 +1,5 @@
+import { login } from "./handlers.js";
+
 const emailValidation = (email) => {
     const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
     return re.test(String(email).toLowerCase());
@@ -12,29 +14,13 @@ const pwdValidation = (pwd) => {
         symbols: /[^a-zA-Z0-9]/
     };
 
-    const brokenRules = [];
-
-    if (pwd.length < rules.length) {
-        brokenRules.push("length");
-    }
-
-    if (!pwd.match(rules.lowerCase)) {
-        brokenRules.push("lowerCase");
-    }
-
-    if (!pwd.match(rules.upperCase)) {
-        brokenRules.push("upperCase");
-    }
-
-    if (!pwd.match(rules.numbers)) {
-        brokenRules.push("numbers");
-    }
-
-    if (!pwd.match(rules.symbols)) {
-        brokenRules.push("symbols");
-    }
-
-    return brokenRules;
+    return {
+        "pwdLength": pwd.length >= rules.length,
+        "pwdLower": rules.lowerCase.test(pwd),
+        "pwdUpper": rules.upperCase.test(pwd),
+        "pwdNumber": rules.numbers.test(pwd),
+        "pwdSymbol": rules.symbols.test(pwd)
+    };
 }
 
 window.onload = () => {
@@ -46,8 +32,11 @@ window.onload = () => {
     const pwdInfo = document.getElementsByClassName("pwdInfo")[0];
     const pwdError = document.getElementsByClassName("pwdError")[0];
 
-    emailInput.style.width = "email".length + "ch"; 
-    pwdInput.style.width = "password".length + "ch";
+    emailInput.focus();
+
+    emailInput.addEventListener("focus", ({target}) => {
+        emailInput.style.width = target.value.length + "ch";
+    })
 
     emailInput.addEventListener("input", ({target}) => {
         const { value } = target;
@@ -81,88 +70,63 @@ window.onload = () => {
             pwdInfo.innerText = "[enter] to confirm password";
         }
 
-        const brokenRules = pwdValidation(value.trim());
+        const rules = pwdValidation(value.trim());
+        const anyRuleFails = Object.values(rules).some((rule) => !rule);
 
-        console.log(brokenRules);
-
-        if (brokenRules.length === 0) {
+        if (anyRuleFails) {
+            pwdInfo.classList.remove("pwdConfirm");
+            pwdInfo.classList.add("pwdInvalid");
+            pwdError.innerText = "invalid password";
+        } else {
             pwdInfo.classList.remove("pwdInvalid");
             pwdInfo.classList.add("pwdConfirm");
         }
 
-        if (brokenRules.length > 0) {
-            pwdInfo.classList.remove("pwdConfirm");
-            pwdInfo.classList.add("pwdInvalid");
-            pwdError.innerText = "invalid password";
+        for (const [rule, rulePass] of Object.entries(rules)) {
+            const ruleElement = document.getElementsByClassName(`${rule}`)[0];
+            if (rulePass) {
+                ruleElement.classList.remove("pwdRuleFail");
+                ruleElement.classList.add("pwdRulePass");
+            } else {
+                ruleElement.classList.remove("pwdRulePass");
+                ruleElement.classList.add("pwdRuleFail");
+            }
         }
-
-        if (!brokenRules.includes("length")) {
-            const lengthRule = document.getElementsByClassName("pwdLength")[0];
-            lengthRule.classList.remove("pwdRuleFail");
-            lengthRule.classList.add("pwdRulePass");
-        }
-        if (!brokenRules.includes("lowerCase")) {
-            const lowerCaseRule = document.getElementsByClassName("pwdLower")[0];
-            lowerCaseRule.classList.remove("pwdRuleFail");
-            lowerCaseRule.classList.add("pwdRulePass");
-        }
-        if (!brokenRules.includes("upperCase")) {
-            const upperCaseRule = document.getElementsByClassName("pwdUpper")[0];
-            upperCaseRule.classList.remove("pwdRuleFail");
-            upperCaseRule.classList.add("pwdRulePass");
-        }
-        if (!brokenRules.includes("numbers")) {
-            const numbersRule = document.getElementsByClassName("pwdNumber")[0];
-            numbersRule.classList.remove("pwdRuleFail");
-            numbersRule.classList.add("pwdRulePass");
-        }
-        if (!brokenRules.includes("symbols")) {
-            const symbolsRule = document.getElementsByClassName("pwdSymbol")[0];
-            symbolsRule.classList.remove("pwdRuleFail");
-            symbolsRule.classList.add("pwdRulePass");
-        }
-
-        if (brokenRules.includes("length")) {
-            const lengthRule = document.getElementsByClassName("pwdLength")[0];
-            lengthRule.classList.remove("pwdRulePass");
-            lengthRule.classList.add("pwdRuleFail");
-        }
-        if (brokenRules.includes("lowerCase")) {
-            const lowerCaseRule = document.getElementsByClassName("pwdLower")[0];
-            lowerCaseRule.classList.remove("pwdRulePass");
-            lowerCaseRule.classList.add("pwdRuleFail");
-        }
-        if (brokenRules.includes("upperCase")) {
-            const upperCaseRule = document.getElementsByClassName("pwdUpper")[0];
-            upperCaseRule.classList.remove("pwdRulePass");
-            upperCaseRule.classList.add("pwdRuleFail");
-        }
-        if (brokenRules.includes("numbers")) {
-            const numbersRule = document.getElementsByClassName("pwdNumber")[0];
-            numbersRule.classList.remove("pwdRulePass");
-            numbersRule.classList.add("pwdRuleFail");
-        }
-        if (brokenRules.includes("symbols")) {
-            const symbolsRule = document.getElementsByClassName("pwdSymbol")[0];
-            symbolsRule.classList.remove("pwdRulePass");
-            symbolsRule.classList.add("pwdRuleFail");
-        }   
-
     });
 
     emailInput.addEventListener("blur", ({target}) => {
         if (target.value.trim() === "") {
-            target.value = "email";
             document.getElementsByClassName("emailError")[0].innerText = "";
+            target.style.width = "email".length + "ch";
+        } else {
+            target.style.width = target.value.length + "ch";
         }
-        target.style.width = target.value.length + "ch";
         emailInfo.innerText = "";
+    })
+
+    pwdInput.addEventListener("blur", ({target}) => {
+        if (target.value.trim() === "") {
+            document.getElementsByClassName("pwdError")[0].innerText = "";
+            target.style.width = "password".length + "ch";
+        } else {
+            target.style.width = target.value.length + "ch";
+        }
+        pwdInfo.innerText = "";
     })
 
     emailInput.addEventListener("keypress", ({key, target}) => {
         if (key === "Enter" && emailValidation(target.value.trim())) {
             target.blur();
             document.getElementsByClassName("pwdInput")[0].focus();
+        }
+    });
+
+    pwdInput.addEventListener("keypress", async ({key, target}) => {
+        if (key === "Enter") {
+            // if (Object.values(pwdValidation(target.value.trim())).every((rule) => rule)) {
+                target.blur();
+                await login({ email: emailInput.value.trim(), password: pwdInput.value.trim() });
+            // }
         }
     });
 }
