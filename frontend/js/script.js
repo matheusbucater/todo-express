@@ -3,7 +3,9 @@ import { addTask } from "./handlers.js";
 import { getCookie } from "./cookie.js";
 
 const fetchTasks = async () => {
-    return await fetch("http://localhost:8080/tasks?ordered=true")
+    return await fetch("http://localhost:8080/tasks?ordered=true", {
+        headers: { "X-Access-Token": getCookie("token") }        
+    })
         .then((response) => {
             if (response.status === 400) {
                 return Promise.reject();

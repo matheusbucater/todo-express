@@ -1,3 +1,4 @@
+import { setCookie } from "./cookie.js";
 import { login } from "./handlers.js";
 
 const emailValidation = (email) => {
@@ -31,6 +32,14 @@ window.onload = () => {
     const pwdInput = document.getElementsByClassName("pwdInput")[0];
     const pwdInfo = document.getElementsByClassName("pwdInfo")[0];
     const pwdError = document.getElementsByClassName("pwdError")[0];
+
+    if (emailInput.value.trim() != "") {
+        emailInput.style.width = emailInput.value.length + "ch";
+    }
+
+    if (pwdInput.value.trim() != "") {
+        pwdInput.style.width = pwdInput.value.length + "ch";
+    }
 
     emailInput.focus();
 
@@ -123,10 +132,12 @@ window.onload = () => {
 
     pwdInput.addEventListener("keypress", async ({key, target}) => {
         if (key === "Enter") {
-            // if (Object.values(pwdValidation(target.value.trim())).every((rule) => rule)) {
-                target.blur();
-                await login({ email: emailInput.value.trim(), password: pwdInput.value.trim() });
-            // }
+            target.blur();
+            const response = await login({ email: emailInput.value.trim(), password: pwdInput.value.trim() });
+            if (response.status === 201) {
+                setCookie("token", response.headers.get("X-Access-Token"), 1);
+                window.location.href = "./index.html";
+            }
         }
     });
 }

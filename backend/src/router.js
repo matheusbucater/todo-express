@@ -16,8 +16,8 @@ router.delete("/tasks/:id", tasksMiddleware.validateParams, tokensMiddleware.val
 router.put("/tasks/:id", tasksMiddleware.validateParams, tasksMiddleware.validateTaskBody, tokensMiddleware.validateUserToken, tasksController.updateTask);
 
 router.get("/login", tokensMiddleware.validateUserToken, (_, res) => res.status(201).json());
-router.post("/login", usersMiddleware.validateUserBody, usersMiddleware.validateUserCredentials, tokensMiddleware.generateUserToken, (_, res) => res.status(201).json());
-router.post("/register", usersMiddleware.validateUserBody, usersController.registerUser);
+router.post("/login", usersMiddleware.validateLoginBody, usersMiddleware.validateUserCredentials, tokensMiddleware.generateUserToken, (_,res) => res.status(201).json());
+router.post("/register", usersMiddleware.validateRegisterBody, usersController.registerUser);
 
 
 module.exports = router;

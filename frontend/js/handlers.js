@@ -1,3 +1,4 @@
+import { getCookie } from "./cookie.js";
 
 const addTask = async (target) => {
     const { value } = target;
@@ -5,7 +6,10 @@ const addTask = async (target) => {
 
     await fetch("http://localhost:8080/tasks", {
         method: "post",
-        headers: { "Content-Type": "application/json" },
+        headers: { 
+            "Content-Type": "application/json",
+            "X-Access-Token": getCookie("token")
+        },
         body: JSON.stringify(taskBody)
     }).then(({status}) => {
         if (status === 400) Promise.reject();
@@ -14,7 +18,8 @@ const addTask = async (target) => {
 
 const deleteTask = async ({id}) => {
     await fetch(`http://localhost:8080/tasks/${id}`, {
-        method: "delete"
+        method: "delete",
+        headers: { "X-Access-Token": getCookie("token") }
     }).then(({status}) => {
         if (status === 400) Promise.reject()
     });
@@ -28,7 +33,10 @@ const updateTaskStatus = async (target) => {
 
     await fetch(`http://localhost:8080/tasks/${value}`, {
         method: "put",
-        headers: { "Content-Type": "application/json" },
+        headers: { 
+            "Content-Type": "application/json",
+            "X-Access-Token": getCookie("token")
+        },
         body: JSON.stringify(taskBody)
     }).then(({status}) => {
         if (status === 400) Promise.reject();
@@ -42,7 +50,10 @@ const updateTaskTitle = async (target) => {
 
     await fetch(`http://localhost:8080/tasks/${id}`, {
         method: "put",
-        headers: { "Content-Type": "application/json" },
+        headers: { 
+            "Content-Type": "application/json",
+            "X-Access-Token": getCookie("token")
+        },
         body: JSON.stringify(taskBody)
     }).then(({status}) => {
         if (status === 400) Promise.reject();
@@ -50,14 +61,11 @@ const updateTaskTitle = async (target) => {
 };
 
 const login = async (userBody) => {
-
-    await fetch("http://localhost:8080/login", {
-        method: "get",
+    return await fetch("http://localhost:8080/login", {
+        method: "post",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(userBody)
-    }).then((res) => {
-        console.log(res.headers);
-    });
+    })
 }
 
 export {
